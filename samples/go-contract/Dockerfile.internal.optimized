@@ -3,19 +3,7 @@
 ARG GO_VER=1.17.5
 ARG ALPINE_VER=3.14
 
-FROM golang:${GO_VER}-alpine${ALPINE_VER} as build
-
-# Use aliyun apk repository to make image build faster
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
-
-RUN apk add --no-cache \
-	bash \
-	binutils-gold \
-  dumb-init \
-	gcc \
-	git \
-	make \
-	musl-dev
+FROM  172.22.50.223/bestchains-dev/golang:${GO_VER}-alpine${ALPINE_VER} as build
 
 ADD . $GOPATH/src/github.com/hyperledger-labs/fabric-builder-k8s/samples/go-contract
 WORKDIR $GOPATH/src/github.com/hyperledger-labs/fabric-builder-k8s/samples/go-contract
@@ -23,7 +11,7 @@ WORKDIR $GOPATH/src/github.com/hyperledger-labs/fabric-builder-k8s/samples/go-co
 ENV GOPROXY=https://goproxy.cn,direct
 RUN go install ./...
 
-FROM golang:${GO_VER}-alpine${ALPINE_VER}
+FROM 172.22.50.223/bestchains-dev/golang:${GO_VER}-alpine${ALPINE_VER}
 
 LABEL org.opencontainers.image.title "Sample Go Contract"
 LABEL org.opencontainers.image.description "Sample Hyperledger Fabric Go contract for Kubernetes chaincode builder"
